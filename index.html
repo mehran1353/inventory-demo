@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>سامانه انبارداری صنایع چوب آداک</title>
+    <link href="./css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="./css/vazir.css" rel="stylesheet">
+    <style>
+        body { margin:0; font-family:Vazir, Tahoma, sans-serif; background-color:#f5f6fa; }
+
+        /* هدر */
+        .app-header { background:linear-gradient(to left, #003366, #0066cc); color:#fff; padding:15px 30px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+        .app-logo{font-size:1.3rem; font-weight:bold; margin-bottom:5px;}
+        .app-title{font-size:1.5rem; font-weight:bold; text-align:center; flex-grow:1; margin-bottom:5px;}
+        .user-info{display:flex; align-items:center; gap:10px; text-align:right; margin-bottom:5px;}
+        .user-info img{width:45px;height:45px;border-radius:50%;border:2px solid #fff;}
+        .user-details{display:flex; flex-direction:column; font-size:0.9rem;}
+
+        /* منو */
+        .app-menu{width:100%; background-color:#f8f9fa; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+        .menu-container{display:flex; justify-content:center; padding:10px 15px;}
+        .menu-container .nav{display:flex; gap:15px;}
+        @media (min-width: 1920px){ .menu-container{justify-content:center;} }
+        .app-menu .nav-link{color:#333; font-weight:bold; padding:8px 15px; border-radius:5px; transition:background 0.2s,color 0.2s;}
+        .app-menu .nav-link:hover{background-color:#e2e6ea; color:#0066cc;}
+        .app-menu .nav-link.active{background-color:#0066cc; color:#fff;}
+        @media (max-width:576px){ .menu-container{justify-content:flex-start;} .app-menu .nav{flex-direction:column; gap:5px;} .app-menu .nav-link{text-align:right;} }
+
+        /* کارت‌ها */
+        .cards-container{display:flex; gap:15px; padding:20px 15px; justify-content:center; flex-wrap:wrap;}
+        .card-box{flex:1 1 150px; min-width:120px; max-width:200px; padding:25px; color:#fff; font-weight:bold; font-size:1rem; border-radius:10px; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.1); cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; position:relative;}
+        .card-box:hover{transform:translateY(-3px); box-shadow:0 6px 12px rgba(0,0,0,0.2);}
+        .card-number{font-size:2rem; margin-top:10px; font-weight:bold;}
+        .card-icon{position:absolute; top:10px; left:10px; font-size:1.5rem; opacity:0.3;}
+
+        .card-sales{background-color:#ff6b6b;}
+        .card-purchase{background-color:#1dd1a1;}
+        .card-return-purchase{background-color:#54a0ff;}
+        .card-return-sales{background-color:#f368e0;}
+        .card-total{background-color:#ff9f43;}
+
+        /* متن فاکتورهای امروز */
+        .today-invoices{text-align:center; color:#28a745; font-weight:bold; font-size:1.2rem; margin:10px 15px 20px;}
+
+        /* جدول */
+        .table-wrapper{display:flex; justify-content:center; padding:0 15px; margin-bottom:30px;}
+        table{width:100%; max-width:1000px; min-width:800px;}
+        thead{background:linear-gradient(to left, #0066cc, #003366); color:#fff;}
+        tbody tr:hover{background-color:rgba(0,123,255,0.05);}
+        td button{margin:0 2px; padding:3px 6px;}
+
+        /* ریسپانسیو */
+        @media (max-width:768px){ .app-header{flex-direction:column; align-items:flex-start;} .app-title{text-align:right;} .cards-container{justify-content:flex-start; gap:10px; direction:rtl;} .table-wrapper{justify-content:center;} table{min-width:100%;} }
+        @media (max-width:576px){ .card-box{flex:1 1 calc(50% - 10px);} }
+    </style>
+</head>
+<body>
+
+    <!-- هدر -->
+    <header class="app-header">
+        <div class="app-logo">🌲 صنایع چوب آداک</div>
+        <div class="app-title">سامانه انبارداری</div>
+        <div class="user-info">
+            <div class="user-details">
+                <span>جهانگیر معصومی</span>
+                <span id="today-date"></span>
+            </div>
+            <img src="https://avatars.dicebear.com/api/bottts/jmasoumi.svg" alt="User">
+        </div>
+    </header>
+
+    <!-- منو -->
+    <nav class="app-menu">
+        <div class="menu-container">
+            <ul class="nav m-0 p-0">
+                <li class="nav-item"><a class="nav-link active" href="#">داشبورد</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">فاکتورها</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">موجودی</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">گزارشات</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">تنظیمات</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- کارت‌ها -->
+    <section class="cards-container">
+        <div class="card-box card-sales"><div class="card-icon">🛒</div>فاکتور فروش<div class="card-number">۲۷</div></div>
+        <div class="card-box card-purchase"><div class="card-icon">📥</div>فاکتور خرید<div class="card-number">۲</div></div>
+        <div class="card-box card-return-purchase"><div class="card-icon">↩️</div>بازگشت از خرید<div class="card-number">۰</div></div>
+        <div class="card-box card-return-sales"><div class="card-icon">↩️</div>بازگشت از فروش<div class="card-number">۰</div></div>
+        <div class="card-box card-total"><div class="card-icon">💰</div>جمع کل<div class="card-number">۱</div></div>
+    </section>
+
+    <!-- متن فاکتورهای امروز -->
+    <div class="today-invoices">فاکتورهای امروز</div>
+
+    <!-- جدول فاکتورها -->
+    <div class="table-wrapper">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>شماره فاکتور</th>
+                        <th>نوع فاکتور</th>
+                        <th>طرف حساب</th>
+                        <th>تعداد اقلام</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color:#007bff;">۱</td>
+                        <td style="color:#007bff;">۰۰۰۰۱</td>
+                        <td style="color:#007bff;">خرید</td>
+                        <td style="color:#007bff;">شرکت تولید و توزیع MDF ایران</td>
+                        <td style="color:#007bff;">۵</td>
+                        <td>
+                            <button class="btn btn-success btn-sm" data-customer="00027" data-name="ایرج بسطامی" data-invoice="۰۰۰۰۱">جزئیات فاکتور</button>
+                            <button class="btn btn-danger btn-sm">موجودی مشتری</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>۲</td>
+                        <td>۰۰۰۰۲</td>
+                        <td style="color:#006400;">فروش</td>
+                        <td>آقای حمید حسین زاده</td>
+                        <td>۳</td>
+                        <td>
+                        
+                            <button class="btn btn-success btn-sm" data-customer="00028" data-name="حمید حسین زاده" data-invoice="۰۰۰۰۲">جزئیات فاکتور</button>
+                            <button class="btn btn-danger btn-sm">موجودی مشتری</button>
+                        </td>
+                    </tr>
+                    <!-- می‌توان تا ۱۰ ردیف اضافه کرد مشابه -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- مودال جزئیات فاکتور داینامیک -->
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#28a745; color:#fff;">
+            <h5 class="modal-title" id="invoiceModalLabel">فاکتور فروش</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+          </div>
+          <div class="modal-body">
+            <div id="customer-info" style="margin-bottom:10px; font-weight:bold;"></div>
+            <hr style="border:2px solid #28a745;">
+            <div class="table-responsive">
+              <table class="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>ردیف</th>
+                    <th>کد کالا</th>
+                    <th>نام کالا</th>
+                    <th>تعداد</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>۱</td><td>1001</td><td>چوب MDF</td><td>۵</td></tr>
+                  <tr><td>۲</td><td>1002</td><td>رنگ روغنی</td><td>۳</td></tr>
+                  <tr><td>۳</td><td>1003</td><td>چسب چوب</td><td>۲</td></tr>
+                  <tr><td>۴</td><td>1004</td><td>میخ و پیچ</td><td>۱۰</td></tr>
+                  <tr><td>۵</td><td>1005</td><td>روغن جلا</td><td>۲</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script>
+        // تاریخ امروز فارسی
+        const todayDate = new Date();
+        const weekdays = ["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"];
+        const formattedDate = todayDate.toLocaleDateString("fa-IR", { year:"numeric", month:"long", day:"numeric" });
+        document.getElementById("today-date").textContent = weekdays[todayDate.getDay()] + " - " + formattedDate;
+
+        // باز کردن مودال و تنظیم اطلاعات داینامیک
+        document.querySelectorAll('.btn-success').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const customer = this.getAttribute('data-customer');
+                const name = this.getAttribute('data-name');
+                const invoice = this.getAttribute('data-invoice');
+                document.getElementById('invoiceModalLabel').textContent = `فاکتور فروش شماره ${invoice}`;
+                document.getElementById('customer-info').textContent = `کد مشتری: ${customer} - نام مشتری: ${name} - تاریخ فاکتور: ${formattedDate}`;
+                var modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+                modal.show();
+            });
+        });
+        
+    </script>
+
+</body>
+</html>
